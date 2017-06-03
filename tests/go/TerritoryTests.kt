@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test
 
 object TerritoryTests {
     val game = GoGame()
+    val territoryFinder = TerritoryFinder(game)
 
     @Test fun territories_notSurrounded_noMansLand() {
         givenBoard("""
@@ -13,7 +14,6 @@ object TerritoryTests {
                 __B_
         """)
 
-        val territoryFinder = TerritoryFinder(game)
         val territories = territoryFinder.territoriesNear(BoardPosition(2, 2))
 
         assertNull(territories[BoardPosition(2, 1)])
@@ -26,7 +26,6 @@ object TerritoryTests {
                 __B__
         """)
 
-        val territoryFinder = TerritoryFinder(game)
         val territories = territoryFinder.territoriesNear(BoardPosition(2, 2))
 
         assertEquals(StoneColor.black, territories[BoardPosition(2, 1)])
