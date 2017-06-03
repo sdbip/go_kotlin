@@ -5,10 +5,9 @@ class TerritoryFinder(private val game: GoGame) {
     private val territories = mutableMapOf<BoardPosition, StoneColor>()
 
     fun territoriesNear(position: BoardPosition): Map<BoardPosition, StoneColor> {
-        for (color in arrayOf(StoneColor.black, StoneColor.white)) {
-            for (startingPosition in neighboursOf(position).filter { isSurrounded(it, color) })
-                paintTerritory(startingPosition, color)
-        }
+        val color = game.stoneAt(position)!!
+        for (startingPosition in neighboursOf(position).filter { isSurrounded(it, color) })
+            paintTerritory(startingPosition, color)
 
         return territories
     }
