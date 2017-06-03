@@ -28,6 +28,28 @@ object TerritoryTests {
         thenTheTerritoryIs(StoneColor.black, at = BoardPosition(2, 1))
     }
 
+    @Test fun territories_twoVerticalTilesSurroundedByBlack_1_blackTerritory() {
+        givenBoard("""
+                __B__
+                _B_B_
+                _B_B_
+                __B__
+        """)
+        whenPlacingStoneAt(BoardPosition(2, 3))
+        thenTheTerritoryIs(StoneColor.black, at = BoardPosition(2, 1))
+    }
+
+    @Test fun territories_twoVerticalTilesSurroundedByBlack_2_blackTerritory() {
+        givenBoard("""
+                __B__
+                _B_B_
+                _B_B_
+                __B__
+        """)
+        whenPlacingStoneAt(BoardPosition(2, 3))
+        thenTheTerritoryIs(StoneColor.black, at = BoardPosition(2, 2))
+    }
+
     @Test fun territories_singleTileSurroundedByWhite_whiteTerritory() {
         givenBoard("""
                 __W__
