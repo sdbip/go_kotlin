@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test
 object TerritoryTests {
     val game = GoGame()
     val territoryFinder = TerritoryFinder(game)
+    var territories = mapOf<BoardPosition, StoneColor>()
 
     @Test fun territories_notSurrounded_noMansLand() {
         givenBoard("""
@@ -13,10 +14,8 @@ object TerritoryTests {
                 _B__
                 __B_
         """)
-
-        val territories = territoryFinder.territoriesNear(BoardPosition(2, 2))
-
-        assertNull(territories[BoardPosition(2, 1)])
+        whenPlacingStoneAt(BoardPosition(2, 2))
+        thenThereIsNoTerritoryAt(BoardPosition(2, 1))
     }
 
     @Test fun territories_singleTileSurroundedByBlack_blackTerritory() {
@@ -25,10 +24,8 @@ object TerritoryTests {
                 _B_B_
                 __B__
         """)
-
-        val territories = territoryFinder.territoriesNear(BoardPosition(2, 2))
-
-        assertEquals(StoneColor.black, territories[BoardPosition(2, 1)])
+        whenPlacingStoneAt(BoardPosition(2, 2))
+        thenTheTerritoryIs(StoneColor.black, at = BoardPosition(2, 1))
     }
 
     @Test fun territories_singleTileSurroundedByWhite_whiteTerritory() {
@@ -37,13 +34,23 @@ object TerritoryTests {
                 _W_W_
                 __W__
         """)
-
-        val territories = territoryFinder.territoriesNear(BoardPosition(2, 2))
-
-        assertEquals(StoneColor.white, territories[BoardPosition(2, 1)])
+        whenPlacingStoneAt(BoardPosition(2, 2))
+        thenTheTerritoryIs(StoneColor.white, at = BoardPosition(2, 1))
     }
 
     private fun givenBoard(layout: String) {
         GoBoardDSL(game).setup(layout)
+    }
+
+    private fun whenPlacingStoneAt(position: BoardPosition) {
+        territories = territoryFinder.territoriesNear(position)
+    }
+
+    private fun thenTheTerritoryIs(color: StoneColor, at: BoardPosition) {
+        assertEquals(color, territories[at])
+    }
+
+    private fun thenThereIsNoTerritoryAt(position: BoardPosition) {
+        assertNull(territories[position])
     }
 }
