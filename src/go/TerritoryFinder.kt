@@ -13,11 +13,12 @@ class TerritoryFinder(private val game: GoGame) {
     }
 
     private fun paintTerritory(startingPosition: BoardPosition, color: StoneColor) {
+        if (game.stoneAt(startingPosition) == color) return
+        if (territories[startingPosition] == color) return
+
         territories[startingPosition] = color
-        for (neighbour in neighboursOf(startingPosition)) {
-            if (game.stoneAt(neighbour) == color) continue
-            if (territories[neighbour] == color) continue
-            paintTerritory(neighbour, color)
+        for (neighbor in neighboursOf(startingPosition)) {
+            paintTerritory(neighbor, color)
         }
     }
 
