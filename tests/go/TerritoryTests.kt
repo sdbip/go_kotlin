@@ -19,7 +19,7 @@ object TerritoryTests {
         assertNull(territories[BoardPosition(2, 1)])
     }
 
-    @Test fun territories_singleSurroundedBlack_blackTerritory() {
+    @Test fun territories_singleTileSurroundedByBlack_blackTerritory() {
         givenBoard("""
                 __B__
                 _B_B_
@@ -29,6 +29,18 @@ object TerritoryTests {
         val territories = territoryFinder.territoriesNear(BoardPosition(2, 2))
 
         assertEquals(StoneColor.black, territories[BoardPosition(2, 1)])
+    }
+
+    @Test fun territories_singleTileSurroundedByWhite_whiteTerritory() {
+        givenBoard("""
+                __W__
+                _W_W_
+                __W__
+        """)
+
+        val territories = territoryFinder.territoriesNear(BoardPosition(2, 2))
+
+        assertEquals(StoneColor.white, territories[BoardPosition(2, 1)])
     }
 
     private fun givenBoard(layout: String) {
