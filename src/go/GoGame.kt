@@ -11,15 +11,10 @@ class GoGame {
         removeSurroundedStonesNear(position)
     }
 
-    private fun removeSurroundedStonesNear(position: BoardPosition) {
-        val neighbours = Delta.unitDirections.map { position + it }
-        for (surrounded in neighbours.filter { isSurrounded(it) }) {
-            placedStones.remove(surrounded)
+    private fun removeSurroundedStonesNear(playedPosition: BoardPosition) {
+        val territories = TerritoryFinder(this).territoriesNear(playedPosition)
+        for ((position) in territories) {
+            placedStones.remove(position)
         }
-    }
-
-    private fun isSurrounded(position: BoardPosition): Boolean {
-        val neighbours = Delta.unitDirections.map { position + it }
-        return neighbours.all { it.x < 0 || stoneAt(it) == StoneColor.black }
     }
 }
