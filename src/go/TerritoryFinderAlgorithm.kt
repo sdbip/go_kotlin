@@ -1,6 +1,6 @@
 package go
 
-class TerritoryFinderAlgorithm(private val game: GoGame, val color: StoneColor, val playedPosition: BoardPosition) {
+class TerritoryFinderAlgorithm(private val board: Board, val color: StoneColor, val playedPosition: BoardPosition) {
     private val map = mutableMapOf<BoardPosition, State>()
 
     fun findNewTerritories(): List<BoardPosition> {
@@ -31,7 +31,7 @@ class TerritoryFinderAlgorithm(private val game: GoGame, val color: StoneColor, 
         for (neighbour in neighboursOf(currentPosition)) {
             if (neighbour.x < 0 || neighbour.y < 0 ||
                     isKnownPossible(neighbour) ||
-                    game.stoneAt(neighbour) == color) continue
+                    board.stoneAt(neighbour) == color) continue
 
             paintTerritoryAt(neighbour)
             mergeStateWith(neighbour)

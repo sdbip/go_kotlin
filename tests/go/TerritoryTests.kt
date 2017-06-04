@@ -4,9 +4,8 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 object TerritoryTests {
-    var game = GoGame()
-    var territoryFinder = TerritorialMap(game)
-    var territories = mapOf<BoardPosition, StoneColor>()
+    var territorialMap = TerritorialMap(Board())
+    var actualTerritories = mapOf<BoardPosition, StoneColor>()
 
     @Test fun territories_notSurrounded_noMansLand() {
         givenBoard("""
@@ -100,16 +99,15 @@ object TerritoryTests {
     }
 
     private fun givenBoard(layout: String) {
-        game = GoGame(GoBoardDSL(layout).board())
-        territoryFinder = TerritorialMap(game)
+        territorialMap = TerritorialMap(GoBoardDSL(layout).board())
     }
 
     private fun whenPlacingStoneAt(position: BoardPosition) {
-        territories = territoryFinder.territoriesNear(position)
+        actualTerritories = territorialMap.territoriesNear(position)
     }
 
     private fun thenTheTerritoryIs(color: StoneColor, vararg expected: BoardPosition) {
-        val actual = territories
+        val actual = actualTerritories
                 .filter { it.value == color }
                 .map { it.key }
                 .sortedBy { (expected.indexOf(it) + 99) % 99 } // same order, right?

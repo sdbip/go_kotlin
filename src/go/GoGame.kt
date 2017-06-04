@@ -1,7 +1,7 @@
 package go
 
-class GoGame(private val board: Board = Board()) {
-    private val territorialMap = TerritorialMap(this)
+class GoGame(val board: Board = Board()) {
+    val territorialMap = TerritorialMap(board)
 
     fun stoneAt(position: BoardPosition) = board.stoneAt(position)
 
