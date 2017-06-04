@@ -36,7 +36,24 @@ object TerritoryTests {
                 __B__
         """)
         whenPlacingStoneAt(BoardPosition(2, 3))
-        thenTheTerritoryIs(StoneColor.black, BoardPosition(2, 1), BoardPosition(2, 2))
+        thenTheTerritoryIs(StoneColor.black,
+                BoardPosition(2, 1),
+                BoardPosition(2, 2))
+    }
+
+    @Test fun territories_arbitraryShapeSurroundedByBlack_blackTerritory() {
+        givenBoard("""
+                __B____
+                _B_BB__
+                _B___B_
+                _B_BB__
+                __B____
+        """)
+        whenPlacingStoneAt(BoardPosition(2, 4))
+        thenTheTerritoryIs(StoneColor.black,
+                BoardPosition(2, 1),
+                BoardPosition(2, 2),  BoardPosition(3, 2),  BoardPosition(4, 2),
+                BoardPosition(2, 3))
     }
 
     @Test fun territories_singleTileSurroundedByWhite_whiteTerritory() {
