@@ -4,8 +4,8 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 object TerritoryTests {
-    val game = GoGame()
-    val territoryFinder = TerritorialMap(game)
+    var game = GoGame()
+    var territoryFinder = TerritorialMap(game)
     var territories = mapOf<BoardPosition, StoneColor>()
 
     @Test fun territories_notSurrounded_noMansLand() {
@@ -100,7 +100,8 @@ object TerritoryTests {
     }
 
     private fun givenBoard(layout: String) {
-        GoBoardDSL(game).setup(layout)
+        game = GoGame(GoBoardDSL(layout).board())
+        territoryFinder = TerritorialMap(game)
     }
 
     private fun whenPlacingStoneAt(position: BoardPosition) {

@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 
 object GamePlayTests {
-    val game = GoGame()
+    var game = GoGame()
 
     @Test fun removesSurroundedStoneAbove() {
         givenBoard("""
@@ -74,7 +74,7 @@ object GamePlayTests {
     }
 
     private fun givenBoard(layout: String) {
-        GoBoardDSL(game).setup(layout)
+        game = GoGame(GoBoardDSL(layout).board())
     }
 
     private fun whenPlacingBlackStoneAt(position: BoardPosition) {
