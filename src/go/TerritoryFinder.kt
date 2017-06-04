@@ -6,7 +6,13 @@ class TerritoryFinder(private val game: GoGame) {
 
     fun territoriesNear(position: BoardPosition): Map<BoardPosition, StoneColor> {
         val color = game.stoneAt(position)!!
-        for (startingPosition in neighboursOf(position).filter { isSurrounded(it, color) })
+        val stateMap = mutableMapOf<BoardPosition, State>()
+
+        for (neighbour in neighboursOf(position).filter { !stateMap.isKnown(it) }) {
+            populateStateMap(neighbour, stateMap, color)
+        }
+
+        for (startingPosition in neighboursOf(position).filter { stateMap.isPossible(it) })
             paintTerritory(startingPosition, color)
 
         return territories
@@ -23,43 +29,35 @@ class TerritoryFinder(private val game: GoGame) {
         }
     }
 
-    private fun isSurrounded(position: BoardPosition, color: StoneColor): Boolean {
-        val stateMap = mutableMapOf<BoardPosition, State>()
-        for (neighbour in neighboursOf(position)) {
-            populateStateMap(neighbour, stateMap, color)
-        }
-        return stateMap.isPossible(position)
-    }
-
     private fun neighboursOf(position: BoardPosition) =
             Delta.unitDirections.map { position + it }
 
     private fun populateStateMap(currentPosition: BoardPosition, state: MutableMap<BoardPosition, State>, color: StoneColor) {
+        if (state.isKnown(currentPosition)) return
+        val thisState = State()
+        state[currentPosition] = thisState
 
         fun mergeStateWith(neighbour: BoardPosition) {
             val neighbouringState = state[neighbour] ?: return
             if (!neighbouringState.isPossible)
-                state[currentPosition]?.isPossible = false
+                thisState.isPossible = false
         }
-
-        state[currentPosition] = State()
 
         for (neighbour in neighboursOf(currentPosition)) {
             if (isAtDisallowedEdge(neighbour)) {
-                state[currentPosition]?.isPossible = false
+                thisState.isPossible = false
                 return
             }
         }
 
         for (neighbour in neighboursOf(currentPosition)) {
             if (neighbour.x < 0 ||
-                    state.isPossible(neighbour) ||
+                    state.isKnownPossible(neighbour) ||
                     game.stoneAt(neighbour) == color) continue
 
             populateStateMap(neighbour, state, color)
             mergeStateWith(neighbour)
-            if (!state.isPossible(currentPosition))
-                return
+            if (!state.isKnownPossible(currentPosition)) return
         }
     }
 
@@ -70,10 +68,22 @@ class TerritoryFinder(private val game: GoGame) {
             position.y < 0 || position.x > 5 || position.y > 5
 
     private fun Map<BoardPosition, State>.isPossible(position: BoardPosition): Boolean {
+        return this[position]?.isPossible ?: true
+    }
+
+    private fun Map<BoardPosition, State>.isKnownPossible(position: BoardPosition): Boolean {
         return this[position]?.isPossible ?: false
+    }
+
+    private fun Map<BoardPosition, State>.isKnown(position: BoardPosition): Boolean {
+        return this[position] != null
     }
 
     private class State {
         var isPossible = true
+
+        override fun toString(): String {
+            return if (isPossible) "possible" else "not possible"
+        }
     }
 }

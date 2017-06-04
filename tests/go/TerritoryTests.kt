@@ -70,10 +70,22 @@ object TerritoryTests {
         givenBoard("""
                 W__
                 _W_
-                W_
+                W__
+                ___
         """)
         whenPlacingStoneAt(BoardPosition(0, 2))
         thenTheTerritoryIs(StoneColor.white, BoardPosition(0, 1))
+    }
+
+    @Test fun territories_noCycle_noTerritory() {
+        givenBoard("""
+                W___
+                _W__
+                ____
+                ____
+        """)
+        whenPlacingStoneAt(BoardPosition(1, 1))
+        thenTheTerritoryIs(StoneColor.white) // empty
     }
 
     private fun givenBoard(layout: String) {
