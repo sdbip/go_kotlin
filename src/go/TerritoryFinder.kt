@@ -13,12 +13,13 @@ class TerritoryFinder(private val game: GoGame) {
     }
 
     private fun paintTerritory(startingPosition: BoardPosition, color: StoneColor) {
+        if (isOutOfBounds(startingPosition)) return
         if (game.stoneAt(startingPosition) == color) return
         if (territories[startingPosition] == color) return
 
         territories[startingPosition] = color
-        for (neighbor in neighboursOf(startingPosition)) {
-            paintTerritory(neighbor, color)
+        for (neighbour in neighboursOf(startingPosition)) {
+            paintTerritory(neighbour, color)
         }
     }
 
@@ -27,38 +28,52 @@ class TerritoryFinder(private val game: GoGame) {
         for (neighbour in neighboursOf(position)) {
             populateStateMap(neighbour, stateMap, color)
         }
-        return stateMap[position] == State.possible
+        return stateMap.isPossible(position)
     }
 
     private fun neighboursOf(position: BoardPosition) =
             Delta.unitDirections.map { position + it }
 
     private fun populateStateMap(currentPosition: BoardPosition, state: MutableMap<BoardPosition, State>, color: StoneColor) {
+
+        fun mergeStateWith(neighbour: BoardPosition) {
+            val neighbouringState = state[neighbour] ?: return
+            if (!neighbouringState.isPossible)
+                state[currentPosition]?.isPossible = false
+        }
+
+        state[currentPosition] = State()
+
         for (neighbour in neighboursOf(currentPosition)) {
-            if (game.isOutOfBounds(neighbour)) {
-                state[currentPosition] = State.connectedToEdge
+            if (isAtDisallowedEdge(neighbour)) {
+                state[currentPosition]?.isPossible = false
                 return
             }
         }
 
-        state[currentPosition] = State.possible
         for (neighbour in neighboursOf(currentPosition)) {
-            if (state[neighbour] == State.possible ||
+            if (neighbour.x < 0 ||
+                    state.isPossible(neighbour) ||
                     game.stoneAt(neighbour) == color) continue
 
             populateStateMap(neighbour, state, color)
-            if (state[neighbour] == State.connectedToEdge) {
-                state[currentPosition] = State.connectedToEdge
+            mergeStateWith(neighbour)
+            if (!state.isPossible(currentPosition))
                 return
-            }
         }
     }
-}
 
-private fun GoGame.isOutOfBounds(position: BoardPosition) =
-        position.x < 0 || position.y < 0 || position.x > 5 || position.y > 5
+    private fun isOutOfBounds(position: BoardPosition) =
+            position.x < 0 || position.y < 0 || position.x > 5 || position.y > 5
 
+    private fun isAtDisallowedEdge(position: BoardPosition) =
+            position.y < 0 || position.x > 5 || position.y > 5
 
-enum class State {
-    possible, connectedToEdge
+    private fun Map<BoardPosition, State>.isPossible(position: BoardPosition): Boolean {
+        return this[position]?.isPossible ?: false
+    }
+
+    private class State {
+        var isPossible = true
+    }
 }
