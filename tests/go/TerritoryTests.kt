@@ -97,6 +97,17 @@ object TerritoryTests {
         thenTheTerritoryIs(StoneColor.white, BoardPosition(1, 0))
     }
 
+    @Test fun territories_rightEdgeBorder_isTerritory() {
+        givenBoard("""
+                ___W
+                __W_
+                ___W
+                ____
+        """)
+        whenPlacingStoneAt(BoardPosition(x = 2, y = 1))
+        thenTheTerritoryIs(StoneColor.white, BoardPosition(x = 3, y = 1))
+    }
+
     private fun givenBoard(layout: String) {
         territorialMap = TerritorialMap(GoBoardDSL(layout).board())
     }

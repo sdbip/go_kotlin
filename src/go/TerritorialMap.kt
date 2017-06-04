@@ -1,6 +1,6 @@
 package go
 
-class TerritorialMap(private val board: Board) {
+class TerritorialMap(val board: Board) {
     val territories = mutableMapOf<BoardPosition, StoneColor>()
 
     fun changeTerritories(playedPosition : BoardPosition) {
@@ -26,5 +26,6 @@ class TerritorialMap(private val board: Board) {
             Delta.unitDirections.map { position + it }
 
     private fun isOutOfBounds(position: BoardPosition) =
-            position.x < 0 || position.y < 0 || position.x > 5 || position.y > 5
+            position.x < 0 || position.x >= board.size ||
+                    position.y < 0 || position.y >= board.size
 }

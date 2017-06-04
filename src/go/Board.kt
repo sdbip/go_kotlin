@@ -2,6 +2,7 @@ package go
 
 class Board {
     private val placedStones = mutableMapOf<BoardPosition, StoneColor>()
+    var size = 19
 
     fun stoneAt(position: BoardPosition) = placedStones[position]
 

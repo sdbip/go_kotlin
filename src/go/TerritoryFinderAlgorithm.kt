@@ -22,7 +22,7 @@ class TerritoryFinderAlgorithm(private val board: Board, val color: StoneColor, 
         }
 
         for (neighbour in neighboursOf(currentPosition)) {
-            if (isAtDisallowedEdge(neighbour)) {
+            if (neighbour.y >= board.size) {
                 thisState.isPossible = false
                 return
             }
@@ -30,6 +30,7 @@ class TerritoryFinderAlgorithm(private val board: Board, val color: StoneColor, 
 
         for (neighbour in neighboursOf(currentPosition)) {
             if (neighbour.x < 0 || neighbour.y < 0 ||
+                    neighbour.x >= board.size ||
                     isKnownPossible(neighbour) ||
                     board.stoneAt(neighbour) == color) continue
 
@@ -49,9 +50,6 @@ class TerritoryFinderAlgorithm(private val board: Board, val color: StoneColor, 
 
     private fun neighboursOf(position: BoardPosition) =
             Delta.unitDirections.map { position + it }
-
-    private fun isAtDisallowedEdge(position: BoardPosition) =
-            position.x > 5 || position.y > 5
 
     private fun isKnownPossible(position: BoardPosition): Boolean {
         return map[position]?.isPossible ?: false
