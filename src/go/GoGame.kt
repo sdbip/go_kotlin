@@ -1,21 +1,21 @@
 package go
 
 class GoGame {
-    private val placedStones = mutableMapOf<BoardPosition, StoneColor>()
+    private val board = Board()
     private val territorialMap = TerritorialMap(this)
 
-    fun stoneAt(position: BoardPosition) = placedStones[position]
+    fun stoneAt(position: BoardPosition) = board.stoneAt(position)
 
     fun placeStone(stone: StoneColor, at: BoardPosition) {
         val position = at
-        placedStones[position] = stone
+        board.placeStone(stone, at = position)
         removeSurroundedStonesNear(position)
     }
 
     private fun removeSurroundedStonesNear(playedPosition: BoardPosition) {
         val territories = territorialMap.territoriesNear(playedPosition)
         for ((position, _) in territories) {
-            placedStones.remove(position)
+            board.removeStoneAt(position)
         }
     }
 }
