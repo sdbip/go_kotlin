@@ -1,6 +1,6 @@
 package go
 
-class TerritoryFinder(private val game: GoGame) {
+class TerritorialMap(private val game: GoGame) {
     private val territories = mutableMapOf<BoardPosition, StoneColor>()
 
     fun territoriesNear(position: BoardPosition): Map<BoardPosition, StoneColor> {

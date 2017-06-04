@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 
 object TerritoryTests {
     val game = GoGame()
-    val territoryFinder = TerritoryFinder(game)
+    val territoryFinder = TerritorialMap(game)
     var territories = mapOf<BoardPosition, StoneColor>()
 
     @Test fun territories_notSurrounded_noMansLand() {
