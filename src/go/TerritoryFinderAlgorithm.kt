@@ -1,12 +1,15 @@
 package go
 
-class TerritoryFinderAlgorithm(private val board: Board, val color: StoneColor, val playedPosition: BoardPosition) {
+class TerritoryFinderAlgorithm(
+        private val board: Board,
+        private val color: StoneColor,
+        private val playedPosition: BoardPosition) {
     private val map = mutableMapOf<BoardPosition, Territory>()
 
     fun findNewTerritories(): List<BoardPosition> {
         for (neighbour in neighboursOf(playedPosition))
             expandTerritoryTo(neighbour, Territory())
-        return neighboursOf(playedPosition).filter { map[it]?.isPossible ?: false }
+        return neighboursOf(playedPosition).filter { map[it]?.isSurrounded ?: false }
     }
 
     private fun expandTerritoryTo(position: BoardPosition, territory: Territory) {
@@ -36,7 +39,7 @@ class TerritoryFinderAlgorithm(private val board: Board, val color: StoneColor, 
         var reachesTopEdge = false
         var reachesBottomEdge = false
 
-        val isPossible get() = (!reachesLeftEdge || !reachesRightEdge)
-                && (!reachesTopEdge || !reachesBottomEdge)
+        val isSurrounded get() = !(reachesLeftEdge && reachesRightEdge)
+                && !(reachesTopEdge && reachesBottomEdge)
     }
 }
