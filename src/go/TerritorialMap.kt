@@ -1,16 +1,14 @@
 package go
 
 class TerritorialMap(private val board: Board) {
-    private val territories = mutableMapOf<BoardPosition, StoneColor>()
+    val territories = mutableMapOf<BoardPosition, StoneColor>()
 
-    fun territoriesNear(position: BoardPosition): Map<BoardPosition, StoneColor> {
-        val color = board.stoneAt(position)!!
-        val state = TerritoryFinderAlgorithm(board, color, position)
+    fun changeTerritories(playedPosition : BoardPosition) {
+        val color = board.stoneAt(playedPosition)!!
+        val state = TerritoryFinderAlgorithm(board, color, playedPosition)
 
         for (startingPosition in state.findNewTerritories())
             paintTerritory(startingPosition, color)
-
-        return territories
     }
 
     private fun paintTerritory(startingPosition: BoardPosition, color: StoneColor) {

@@ -8,11 +8,12 @@ class GoGame(val board: Board = Board()) {
     fun placeStone(stone: StoneColor, at: BoardPosition) {
         val position = at
         board.placeStone(stone, at = position)
-        removeSurroundedStonesNear(position)
+        territorialMap.changeTerritories(playedPosition = position)
+        removeSurroundedStones()
     }
 
-    private fun removeSurroundedStonesNear(playedPosition: BoardPosition) {
-        val territories = territorialMap.territoriesNear(playedPosition)
+    private fun removeSurroundedStones() {
+        val territories = territorialMap.territories
         for ((position, _) in territories) {
             board.removeStoneAt(position)
         }

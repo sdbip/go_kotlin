@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test
 
 object TerritoryTests {
     var territorialMap = TerritorialMap(Board())
-    var actualTerritories = mapOf<BoardPosition, StoneColor>()
 
     @Test fun territories_notSurrounded_noMansLand() {
         givenBoard("""
@@ -103,11 +102,11 @@ object TerritoryTests {
     }
 
     private fun whenPlacingStoneAt(position: BoardPosition) {
-        actualTerritories = territorialMap.territoriesNear(position)
+        territorialMap.changeTerritories(playedPosition = position)
     }
 
     private fun thenTheTerritoryIs(color: StoneColor, vararg expected: BoardPosition) {
-        val actual = actualTerritories
+        val actual = territorialMap.territories
                 .filter { it.value == color }
                 .map { it.key }
                 .sortedBy { (expected.indexOf(it) + 99) % 99 } // same order, right?
