@@ -9,4 +9,8 @@ class BoardPosition(val x: Int, val y: Int) {
     override fun hashCode(): Int {
         return Short.MAX_VALUE * x + y
     }
+
+    override fun toString(): String {
+        return "($x, $y)"
+    }
 }

@@ -15,7 +15,7 @@ object TerritoryTests {
                 __B_
         """)
         whenPlacingStoneAt(BoardPosition(2, 2))
-        thenThereIsNoTerritoryAt(BoardPosition(2, 1))
+        thenTheTerritoryIs(StoneColor.black) // empty
     }
 
     @Test fun territories_singleTileSurroundedByBlack_blackTerritory() {
@@ -25,10 +25,10 @@ object TerritoryTests {
                 __B__
         """)
         whenPlacingStoneAt(BoardPosition(2, 2))
-        thenTheTerritoryIs(StoneColor.black, at = BoardPosition(2, 1))
+        thenTheTerritoryIs(StoneColor.black, BoardPosition(2, 1))
     }
 
-    @Test fun territories_twoVerticalTilesSurroundedByBlack_1_blackTerritory() {
+    @Test fun territories_twoVerticalTilesSurroundedByBlack_blackTerritory() {
         givenBoard("""
                 __B__
                 _B_B_
@@ -36,18 +36,7 @@ object TerritoryTests {
                 __B__
         """)
         whenPlacingStoneAt(BoardPosition(2, 3))
-        thenTheTerritoryIs(StoneColor.black, at = BoardPosition(2, 1))
-    }
-
-    @Test fun territories_twoVerticalTilesSurroundedByBlack_2_blackTerritory() {
-        givenBoard("""
-                __B__
-                _B_B_
-                _B_B_
-                __B__
-        """)
-        whenPlacingStoneAt(BoardPosition(2, 3))
-        thenTheTerritoryIs(StoneColor.black, at = BoardPosition(2, 2))
+        thenTheTerritoryIs(StoneColor.black, BoardPosition(2, 1), BoardPosition(2, 2))
     }
 
     @Test fun territories_singleTileSurroundedByWhite_whiteTerritory() {
@@ -57,7 +46,7 @@ object TerritoryTests {
                 __W__
         """)
         whenPlacingStoneAt(BoardPosition(2, 2))
-        thenTheTerritoryIs(StoneColor.white, at = BoardPosition(2, 1))
+        thenTheTerritoryIs(StoneColor.white, BoardPosition(2, 1))
     }
 
     private fun givenBoard(layout: String) {
@@ -68,11 +57,11 @@ object TerritoryTests {
         territories = territoryFinder.territoriesNear(position)
     }
 
-    private fun thenTheTerritoryIs(color: StoneColor, at: BoardPosition) {
-        assertEquals(color, territories[at])
-    }
-
-    private fun thenThereIsNoTerritoryAt(position: BoardPosition) {
-        assertNull(territories[position])
+    private fun thenTheTerritoryIs(color: StoneColor, vararg expected: BoardPosition) {
+        val actual = territories
+                .filter { it.value == color }
+                .map { it.key }
+                .sortedBy { (expected.indexOf(it) + 99) % 99 } // same order, right?
+        assertEquals(expected.toList(), actual)
     }
 }
