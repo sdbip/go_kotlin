@@ -51,7 +51,7 @@ class TerritoryFinder(private val game: GoGame) {
         }
 
         for (neighbour in neighboursOf(currentPosition)) {
-            if (neighbour.x < 0 ||
+            if (neighbour.x < 0 || neighbour.y < 0 ||
                     state.isKnownPossible(neighbour) ||
                     game.stoneAt(neighbour) == color) continue
 
@@ -65,7 +65,7 @@ class TerritoryFinder(private val game: GoGame) {
             position.x < 0 || position.y < 0 || position.x > 5 || position.y > 5
 
     private fun isAtDisallowedEdge(position: BoardPosition) =
-            position.y < 0 || position.x > 5 || position.y > 5
+            position.x > 5 || position.y > 5
 
     private fun Map<BoardPosition, State>.isPossible(position: BoardPosition): Boolean {
         return this[position]?.isPossible ?: true

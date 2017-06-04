@@ -88,6 +88,17 @@ object TerritoryTests {
         thenTheTerritoryIs(StoneColor.white) // empty
     }
 
+    @Test fun territories_topEdgeBorder_isTerritory() {
+        givenBoard("""
+                W_W_
+                _W__
+                ____
+                ____
+        """)
+        whenPlacingStoneAt(BoardPosition(1, 1))
+        thenTheTerritoryIs(StoneColor.white, BoardPosition(1, 0))
+    }
+
     private fun givenBoard(layout: String) {
         GoBoardDSL(game).setup(layout)
     }
