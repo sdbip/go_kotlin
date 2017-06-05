@@ -2,9 +2,10 @@ package go
 
 class FloodFillAlgorithm(
         private val board: Board,
-        private val color: StoneColor,
         private val playedPosition: BoardPosition) {
     private val map = mutableMapOf<BoardPosition, Territory>()
+    val playedColor = board.stoneAt(playedPosition)
+            ?: throw IllegalArgumentException("Played position must contain a stone")
 
     fun findNewTerritories(): List<BoardPosition> {
         for (neighbour in neighboursOf(playedPosition))
@@ -13,7 +14,7 @@ class FloodFillAlgorithm(
     }
 
     private fun expandTerritoryTo(position: BoardPosition, territory: Territory) {
-        if (!board.isInBounds(position) || board.stoneAt(position) == color) return
+        if (!board.isInBounds(position) || board.stoneAt(position) == playedColor) return
         if (map[position] != null) return
 
         map[position] = territory
