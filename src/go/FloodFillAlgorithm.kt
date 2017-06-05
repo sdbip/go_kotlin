@@ -1,6 +1,6 @@
 package go
 
-class TerritoryFinderAlgorithm(
+class FloodFillAlgorithm(
         private val board: Board,
         private val color: StoneColor,
         private val playedPosition: BoardPosition) {
