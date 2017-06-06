@@ -5,11 +5,17 @@ class TerritorialMap(val board: Board) {
     private val mutableTerritories = mutableMapOf<BoardPosition, StoneColor>()
 
     fun changeTerritories(playedPosition: BoardPosition) {
-        val finder = TerritoryFloodFillAlgorithm(board, playedPosition)
-        val filler = filler(finder.playedColor)
+        val color = board.stoneAt(playedPosition)
+                ?: throw IllegalArgumentException("Played position must contain a stone")
 
-        for (startingPosition in finder.findNewTerritories())
-            filler.fillFrom(startingPosition)
+        for (neighbour in playedPosition.neighbours().filter {
+            Territory(board, it).isSurroundedBy(color)
+        })
+            floodFill(color, from = neighbour)
+    }
+
+    private fun floodFill(color: StoneColor, from: BoardPosition) {
+        filler(color).fillFrom(from)
     }
 
     fun filler(color: StoneColor) = object : GoGameFillerAlgorithm(board, color) {
