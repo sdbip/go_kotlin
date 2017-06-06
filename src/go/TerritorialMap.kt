@@ -12,7 +12,7 @@ class TerritorialMap(val board: Board) {
     }
 
     private fun paintTerritory(startingPosition: BoardPosition, color: StoneColor) {
-        if (startingPosition.isOutOfBounds()) return
+        if (!board.isInBounds(startingPosition)) return
         if (board.stoneAt(startingPosition) == color) return
         if (mutableTerritories[startingPosition] == color) return
 
@@ -21,7 +21,4 @@ class TerritorialMap(val board: Board) {
             paintTerritory(neighbour, color)
         }
     }
-
-    private fun BoardPosition.isOutOfBounds() =
-            x < 0 || x >= board.size || y < 0 || y >= board.size
 }
