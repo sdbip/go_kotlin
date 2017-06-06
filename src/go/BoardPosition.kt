@@ -13,4 +13,6 @@ class BoardPosition(val x: Int, val y: Int) {
     override fun toString(): String {
         return "($x, $y)"
     }
+
+    fun neighbours() = Delta.unitDirections.map { this + it }
 }

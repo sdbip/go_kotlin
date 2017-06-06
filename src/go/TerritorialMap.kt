@@ -16,13 +16,10 @@ class TerritorialMap(val board: Board) {
         if (territories[startingPosition] == color) return
 
         territories[startingPosition] = color
-        for (neighbour in neighboursOf(startingPosition)) {
+        for (neighbour in startingPosition.neighbours()) {
             paintTerritory(neighbour, color)
         }
     }
-
-    private fun neighboursOf(position: BoardPosition) =
-            Delta.unitDirections.map { position + it }
 
     private fun isOutOfBounds(position: BoardPosition) =
             position.x < 0 || position.x >= board.size ||

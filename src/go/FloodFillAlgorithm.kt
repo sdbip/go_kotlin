@@ -8,9 +8,9 @@ class FloodFillAlgorithm(
             ?: throw IllegalArgumentException("Played position must contain a stone")
 
     fun findNewTerritories(): List<BoardPosition> {
-        for (neighbour in neighboursOf(playedPosition))
+        for (neighbour in playedPosition.neighbours())
             expandTerritoryTo(neighbour, Territory())
-        return neighboursOf(playedPosition).filter { map[it]?.isSurrounded ?: false }
+        return playedPosition.neighbours().filter { map[it]?.isSurrounded ?: false }
     }
 
     private fun expandTerritoryTo(position: BoardPosition, territory: Territory) {
@@ -20,7 +20,7 @@ class FloodFillAlgorithm(
         map[position] = territory
         territory.addEdgeInfo(position)
 
-        for (neighbour in neighboursOf(position))
+        for (neighbour in position.neighbours())
             expandTerritoryTo(neighbour, territory)
     }
 
@@ -33,9 +33,6 @@ class FloodFillAlgorithm(
         if (isAtMinEdge(position.y)) reachesTopEdge = true
         if (isAtMaxEdge(position.y)) reachesBottomEdge = true
     }
-
-    private fun neighboursOf(position: BoardPosition) =
-            Delta.unitDirections.map { position + it }
 
     private class Territory {
         var reachesLeftEdge = false
