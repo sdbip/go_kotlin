@@ -18,17 +18,17 @@ class FloodFillAlgorithm(
         if (map[position] != null) return
 
         map[position] = territory
-        addEdgeInfo(position, territory)
+        territory.addEdgeInfo(position)
 
         for (neighbour in neighboursOf(position))
             expandTerritoryTo(neighbour, territory)
     }
 
-    private fun addEdgeInfo(currentPosition: BoardPosition, territory: Territory) {
-        if (currentPosition.x <= 0) territory.reachesLeftEdge = true
-        if (currentPosition.x >= board.size - 1) territory.reachesRightEdge = true
-        if (currentPosition.y <= 0) territory.reachesTopEdge = true
-        if (currentPosition.y >= board.size - 1) territory.reachesBottomEdge = true
+    private fun Territory.addEdgeInfo(position: BoardPosition) {
+        if (position.x <= 0) reachesLeftEdge = true
+        if (position.x >= board.size - 1) reachesRightEdge = true
+        if (position.y <= 0) reachesTopEdge = true
+        if (position.y >= board.size - 1) reachesBottomEdge = true
     }
 
     private fun neighboursOf(position: BoardPosition) =
