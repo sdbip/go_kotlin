@@ -25,10 +25,13 @@ class FloodFillAlgorithm(
     }
 
     private fun Territory.addEdgeInfo(position: BoardPosition) {
-        if (position.x <= 0) reachesLeftEdge = true
-        if (position.x >= board.size - 1) reachesRightEdge = true
-        if (position.y <= 0) reachesTopEdge = true
-        if (position.y >= board.size - 1) reachesBottomEdge = true
+        fun isAtMinEdge(coordinate: Int) = coordinate <= 0
+        fun isAtMaxEdge(coordinate: Int) = coordinate >= board.size - 1
+
+        if (isAtMinEdge(position.x)) reachesLeftEdge = true
+        if (isAtMaxEdge(position.x)) reachesRightEdge = true
+        if (isAtMinEdge(position.y)) reachesTopEdge = true
+        if (isAtMaxEdge(position.y)) reachesBottomEdge = true
     }
 
     private fun neighboursOf(position: BoardPosition) =
