@@ -8,14 +8,16 @@ class TerritorialMap(val board: Board) {
         val color = board.stoneAt(playedPosition)
                 ?: throw IllegalArgumentException("Played position must contain a stone")
 
-        for (neighbour in playedPosition.neighbours().filter {
-            Territory(board, it).isSurroundedBy(color)
-        })
-            floodFill(color, from = neighbour)
+        for (neighbour in playedPosition.neighbours()
+                .filter { shouldAddTerritory(color, startingPosition = it) })
+            addTerritory(color, startingPosition = neighbour)
     }
 
-    private fun floodFill(color: StoneColor, from: BoardPosition) {
-        filler(color).fillFrom(from)
+    private fun shouldAddTerritory(color: StoneColor, startingPosition: BoardPosition) =
+            TerritoryFinder(board, color).isTerritory(startingPosition)
+
+    private fun addTerritory(color: StoneColor, startingPosition: BoardPosition) {
+        filler(color).fillFrom(startingPosition)
     }
 
     fun filler(color: StoneColor) = object : GoGameFillerAlgorithm(board, color) {

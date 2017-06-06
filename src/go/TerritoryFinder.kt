@@ -1,15 +1,16 @@
 package go
 
-class Territory(
+class TerritoryFinder(
         private val board: Board,
-        private val startingPosition: BoardPosition) {
+        private val color: StoneColor) {
     private val map = mutableMapOf<BoardPosition, Boolean>()
     var reachesLeftEdge = false
     var reachesRightEdge = false
     var reachesTopEdge = false
     var reachesBottomEdge = false
 
-    fun isSurroundedBy(color: StoneColor): Boolean {
+    fun isTerritory(position: BoardPosition): Boolean {
+        val startingPosition = position
         if (startingPosition in map) return false
 
         val filler = filler(color)
