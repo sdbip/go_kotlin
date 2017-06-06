@@ -12,13 +12,19 @@ class TerritorialMap(val board: Board) {
     }
 
     private fun paintTerritory(startingPosition: BoardPosition, color: StoneColor) {
-        if (!board.isInBounds(startingPosition)) return
-        if (board.stoneAt(startingPosition) == color) return
-        if (mutableTerritories[startingPosition] == color) return
+        object : FloodFillAlgorithm<BoardPosition>() {
+            override fun paint(position: BoardPosition) {
+                mutableTerritories[position] = color
+            }
 
-        mutableTerritories[startingPosition] = color
-        for (neighbour in startingPosition.neighbours()) {
-            paintTerritory(neighbour, color)
-        }
+            override fun isPainted(position: BoardPosition): Boolean =
+                    !board.isInBounds(position) ||
+                            board.stoneAt(position) == color ||
+                            mutableTerritories[position] == color
+
+            override fun neighboursOf(position: BoardPosition): Iterable<BoardPosition> {
+                return position.neighbours()
+            }
+        }.fill(startingPosition)
     }
 }
