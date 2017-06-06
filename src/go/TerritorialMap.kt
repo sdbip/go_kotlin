@@ -1,7 +1,8 @@
 package go
 
 class TerritorialMap(val board: Board) {
-    val territories = mutableMapOf<BoardPosition, StoneColor>()
+    val territories get() = mutableTerritories.toMap()
+    private val mutableTerritories = mutableMapOf<BoardPosition, StoneColor>()
 
     fun changeTerritories(playedPosition: BoardPosition) {
         val algorithm = FloodFillAlgorithm(board, playedPosition)
@@ -13,9 +14,9 @@ class TerritorialMap(val board: Board) {
     private fun paintTerritory(startingPosition: BoardPosition, color: StoneColor) {
         if (startingPosition.isOutOfBounds()) return
         if (board.stoneAt(startingPosition) == color) return
-        if (territories[startingPosition] == color) return
+        if (mutableTerritories[startingPosition] == color) return
 
-        territories[startingPosition] = color
+        mutableTerritories[startingPosition] = color
         for (neighbour in startingPosition.neighbours()) {
             paintTerritory(neighbour, color)
         }
