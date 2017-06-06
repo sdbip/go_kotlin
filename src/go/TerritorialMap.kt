@@ -3,7 +3,7 @@ package go
 class TerritorialMap(val board: Board) {
     val territories = mutableMapOf<BoardPosition, StoneColor>()
 
-    fun changeTerritories(playedPosition : BoardPosition) {
+    fun changeTerritories(playedPosition: BoardPosition) {
         val algorithm = FloodFillAlgorithm(board, playedPosition)
 
         for (startingPosition in algorithm.findNewTerritories())
@@ -11,7 +11,7 @@ class TerritorialMap(val board: Board) {
     }
 
     private fun paintTerritory(startingPosition: BoardPosition, color: StoneColor) {
-        if (isOutOfBounds(startingPosition)) return
+        if (startingPosition.isOutOfBounds()) return
         if (board.stoneAt(startingPosition) == color) return
         if (territories[startingPosition] == color) return
 
@@ -21,7 +21,6 @@ class TerritorialMap(val board: Board) {
         }
     }
 
-    private fun isOutOfBounds(position: BoardPosition) =
-            position.x < 0 || position.x >= board.size ||
-                    position.y < 0 || position.y >= board.size
+    private fun BoardPosition.isOutOfBounds() =
+            x < 0 || x >= board.size || y < 0 || y >= board.size
 }
