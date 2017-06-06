@@ -8,28 +8,19 @@ class TerritoryFloodFillAlgorithm(
             ?: throw IllegalArgumentException("Played position must contain a stone")
 
     fun findNewTerritories(): List<BoardPosition> {
-        for (neighbour in playedPosition.neighbours()) {
-            finder().fill(neighbour)
-        }
+        for (neighbour in playedPosition.neighbours())
+            finder(Territory()).fillFrom(neighbour)
         return playedPosition.neighbours().filter { map[it]?.isSurrounded ?: false }
     }
 
-    private fun finder(): FloodFillAlgorithm<BoardPosition> {
-        val territory = Territory()
-        return object : FloodFillAlgorithm<BoardPosition>() {
-            override fun paint(position: BoardPosition) {
-                map[position] = territory
-                territory.addEdgeInfo(position)
-            }
-
-            override fun isPainted(position: BoardPosition) =
-                    !board.isInBounds(position) ||
-                            board.stoneAt(position) == playedColor ||
-                            map[position] != null
-
-            override fun neighboursOf(position: BoardPosition) =
-                    position.neighbours()
+    private fun finder(territory: Territory) = object : GoGameFillerAlgorithm(board, playedColor) {
+        override fun paint(position: BoardPosition) {
+            map[position] = territory
+            territory.addEdgeInfo(position)
         }
+
+        override fun isPainted(position: BoardPosition) =
+                super.isPainted(position) || map[position] != null
     }
 
     private fun Territory.addEdgeInfo(position: BoardPosition) {

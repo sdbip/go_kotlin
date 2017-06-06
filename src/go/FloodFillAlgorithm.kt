@@ -5,12 +5,12 @@ abstract class FloodFillAlgorithm<T> {
     abstract fun isPainted(position: T): Boolean
     abstract fun neighboursOf(position: T): Iterable<T>
 
-    fun fill(startingPosition: T) {
+    fun fillFrom(startingPosition: T) {
         if (isPainted(startingPosition)) return
 
         paint(startingPosition)
 
         for (neighbour in neighboursOf(startingPosition))
-            fill(neighbour)
+            fillFrom(neighbour)
     }
 }

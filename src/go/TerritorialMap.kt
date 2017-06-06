@@ -9,21 +9,27 @@ class TerritorialMap(val board: Board) {
         val filler = filler(finder.playedColor)
 
         for (startingPosition in finder.findNewTerritories())
-            filler.fill(startingPosition)
+            filler.fillFrom(startingPosition)
     }
 
-    fun filler(color: StoneColor) = object : FloodFillAlgorithm<BoardPosition>() {
+    fun filler(color: StoneColor) = object : GoGameFillerAlgorithm(board, color) {
         override fun paint(position: BoardPosition) {
             mutableTerritories[position] = color
         }
 
         override fun isPainted(position: BoardPosition): Boolean =
-                !board.isInBounds(position) ||
-                        board.stoneAt(position) == color ||
-                        mutableTerritories[position] == color
-
-        override fun neighboursOf(position: BoardPosition): Iterable<BoardPosition> {
-            return position.neighbours()
-        }
+                super.isPainted(position) || mutableTerritories[position] == color
     }
+}
+
+abstract class GoGameFillerAlgorithm(
+        private val board: Board,
+        private val color: StoneColor)
+    : FloodFillAlgorithm<BoardPosition>() {
+
+    override fun isPainted(position: BoardPosition): Boolean =
+            !board.isInBounds(position) ||
+                    board.stoneAt(position) == color
+
+    override fun neighboursOf(position: BoardPosition) = position.neighbours()
 }
