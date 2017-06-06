@@ -5,7 +5,7 @@ class TerritorialMap(val board: Board) {
     private val mutableTerritories = mutableMapOf<BoardPosition, StoneColor>()
 
     fun changeTerritories(playedPosition: BoardPosition) {
-        val algorithm = FloodFillAlgorithm(board, playedPosition)
+        val algorithm = TerritoryFloodFillAlgorithm(board, playedPosition)
 
         for (startingPosition in algorithm.findNewTerritories())
             paintTerritory(startingPosition, algorithm.playedColor)

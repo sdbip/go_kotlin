@@ -1,46 +1,16 @@
 package go
 
-class FloodFillAlgorithm(
-        private val board: Board,
-        private val playedPosition: BoardPosition) {
-    private val map = mutableMapOf<BoardPosition, Territory>()
-    val playedColor = board.stoneAt(playedPosition)
-            ?: throw IllegalArgumentException("Played position must contain a stone")
+abstract class FloodFillAlgorithm<T> {
+    abstract fun paint(position: T)
+    abstract fun isPainted(position: T): Boolean
+    abstract fun neighboursOf(position: T): Iterable<T>
 
-    fun findNewTerritories(): List<BoardPosition> {
-        for (neighbour in playedPosition.neighbours())
-            expandTerritoryTo(neighbour, Territory())
-        return playedPosition.neighbours().filter { map[it]?.isSurrounded ?: false }
-    }
+    fun fill(startingPosition: T) {
+        if (isPainted(startingPosition)) return
 
-    private fun expandTerritoryTo(position: BoardPosition, territory: Territory) {
-        if (!board.isInBounds(position) || board.stoneAt(position) == playedColor) return
-        if (map[position] != null) return
+        paint(startingPosition)
 
-        map[position] = territory
-        territory.addEdgeInfo(position)
-
-        for (neighbour in position.neighbours())
-            expandTerritoryTo(neighbour, territory)
-    }
-
-    private fun Territory.addEdgeInfo(position: BoardPosition) {
-        fun isAtMinEdge(coordinate: Int) = coordinate <= 0
-        fun isAtMaxEdge(coordinate: Int) = coordinate >= board.size - 1
-
-        if (isAtMinEdge(position.x)) reachesLeftEdge = true
-        if (isAtMaxEdge(position.x)) reachesRightEdge = true
-        if (isAtMinEdge(position.y)) reachesTopEdge = true
-        if (isAtMaxEdge(position.y)) reachesBottomEdge = true
-    }
-
-    private class Territory {
-        var reachesLeftEdge = false
-        var reachesRightEdge = false
-        var reachesTopEdge = false
-        var reachesBottomEdge = false
-
-        val isSurrounded get() = !(reachesLeftEdge && reachesRightEdge)
-                && !(reachesTopEdge && reachesBottomEdge)
+        for (neighbour in neighboursOf(startingPosition))
+            fill(neighbour)
     }
 }
