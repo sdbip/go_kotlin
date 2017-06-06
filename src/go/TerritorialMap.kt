@@ -6,18 +6,21 @@ class TerritorialMap(val board: Board) {
 
     fun changeTerritories(playedPosition: BoardPosition) {
         val color = board.stoneAt(playedPosition)
-                ?: throw IllegalArgumentException("Played position must contain a stone")
+                ?: throw IllegalArgumentException("playedPosition must contain a stone")
+        val neighboringTerritories = playedPosition.neighbours()
+                .mapNotNull { territoryAt(it, color) }
 
-        for (neighbour in playedPosition.neighbours()
-                .filter { shouldAddTerritory(color, startingPosition = it) })
-            addTerritory(color, startingPosition = neighbour)
+        for (territory in neighboringTerritories)
+            add(territory)
     }
 
-    private fun shouldAddTerritory(color: StoneColor, startingPosition: BoardPosition) =
-            TerritoryFinder(board, color).isTerritory(startingPosition)
+    private fun territoryAt(startingPosition: BoardPosition, boundingStones: StoneColor): Territory? =
+            if (TerritoryFinder(board, boundingStones).isTerritory(startingPosition))
+                Territory(startingPosition, boundingStones)
+            else null
 
-    private fun addTerritory(color: StoneColor, startingPosition: BoardPosition) {
-        filler(color).fillFrom(startingPosition)
+    private fun add(territory: Territory) {
+        filler(territory.boundingStones).fillFrom(territory.startingPosition)
     }
 
     fun filler(color: StoneColor) = object : GoGameFillerAlgorithm(board, color) {
@@ -28,4 +31,8 @@ class TerritorialMap(val board: Board) {
         override fun isPainted(position: BoardPosition): Boolean =
                 super.isPainted(position) || mutableTerritories[position] == color
     }
+
+    private class Territory(
+            val startingPosition: BoardPosition,
+            val boundingStones: StoneColor)
 }
