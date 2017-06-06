@@ -5,26 +5,25 @@ class TerritorialMap(val board: Board) {
     private val mutableTerritories = mutableMapOf<BoardPosition, StoneColor>()
 
     fun changeTerritories(playedPosition: BoardPosition) {
-        val algorithm = TerritoryFloodFillAlgorithm(board, playedPosition)
+        val finder = TerritoryFloodFillAlgorithm(board, playedPosition)
+        val filler = filler(finder.playedColor)
 
-        for (startingPosition in algorithm.findNewTerritories())
-            paintTerritory(startingPosition, algorithm.playedColor)
+        for (startingPosition in finder.findNewTerritories())
+            filler.fill(startingPosition)
     }
 
-    private fun paintTerritory(startingPosition: BoardPosition, color: StoneColor) {
-        object : FloodFillAlgorithm<BoardPosition>() {
-            override fun paint(position: BoardPosition) {
-                mutableTerritories[position] = color
-            }
+    fun filler(color: StoneColor) = object : FloodFillAlgorithm<BoardPosition>() {
+        override fun paint(position: BoardPosition) {
+            mutableTerritories[position] = color
+        }
 
-            override fun isPainted(position: BoardPosition): Boolean =
-                    !board.isInBounds(position) ||
-                            board.stoneAt(position) == color ||
-                            mutableTerritories[position] == color
+        override fun isPainted(position: BoardPosition): Boolean =
+                !board.isInBounds(position) ||
+                        board.stoneAt(position) == color ||
+                        mutableTerritories[position] == color
 
-            override fun neighboursOf(position: BoardPosition): Iterable<BoardPosition> {
-                return position.neighbours()
-            }
-        }.fill(startingPosition)
+        override fun neighboursOf(position: BoardPosition): Iterable<BoardPosition> {
+            return position.neighbours()
+        }
     }
 }

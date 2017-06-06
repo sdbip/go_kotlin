@@ -8,13 +8,15 @@ class TerritoryFloodFillAlgorithm(
             ?: throw IllegalArgumentException("Played position must contain a stone")
 
     fun findNewTerritories(): List<BoardPosition> {
-        for (neighbour in playedPosition.neighbours())
-            expandTerritoryTo(neighbour, Territory())
+        for (neighbour in playedPosition.neighbours()) {
+            finder().fill(neighbour)
+        }
         return playedPosition.neighbours().filter { map[it]?.isSurrounded ?: false }
     }
 
-    private fun expandTerritoryTo(position: BoardPosition, territory: Territory) {
-        object : FloodFillAlgorithm<BoardPosition>() {
+    private fun finder(): FloodFillAlgorithm<BoardPosition> {
+        val territory = Territory()
+        return object : FloodFillAlgorithm<BoardPosition>() {
             override fun paint(position: BoardPosition) {
                 map[position] = territory
                 territory.addEdgeInfo(position)
@@ -27,7 +29,7 @@ class TerritoryFloodFillAlgorithm(
 
             override fun neighboursOf(position: BoardPosition) =
                     position.neighbours()
-        }.fill(position)
+        }
     }
 
     private fun Territory.addEdgeInfo(position: BoardPosition) {
